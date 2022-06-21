@@ -12,11 +12,7 @@ class Novo extends StatefulWidget {
 class _Novo extends State<Novo> {
   // All journals
   List<Map<String, dynamic>> _journals = [];
-  String dropdownvalue = "Selecione";
-  var opcoes = ["Selecione", "Sim", "Não"];
-  bool _liked = false;
   bool _isLoading = true;
-  Color _iconColor = Colors.grey;
   // This function is used to fetch all data from the database
   void _refreshJournals() async {
     final data = await SQLHelper.getItems();
@@ -24,32 +20,6 @@ class _Novo extends State<Novo> {
       _journals = data;
       _isLoading = false;
     });
-  }
-
-  buildHeartWidget(BuildContext context) {
-    return Container(
-        margin: EdgeInsets.only(right: 13, top: 40),
-        alignment: Alignment.topRight,
-        child: GestureDetector(
-          child: Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              //  borderRadius: BorderRadius.circular(25)
-            ),
-            child: Icon(
-              !_liked ? Icons.favorite_border : Icons.favorite,
-              color: !_liked ? Colors.black : Colors.red,
-              size: 20,
-            ),
-          ),
-          onTap: () {
-            setState(() {
-              _liked = !_liked;
-            });
-          },
-        ));
   }
 
   @override
@@ -60,8 +30,6 @@ class _Novo extends State<Novo> {
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  TextEditingController _op1Controller = TextEditingController();
-  final TextEditingController _op2Controller = TextEditingController();
 
   // This function will be triggered when the floating button is pressed
   // It will also be triggered when you want to update an item
@@ -73,8 +41,6 @@ class _Novo extends State<Novo> {
           _journals.firstWhere((element) => element['id'] == id);
       _titleController.text = existingJournal['title'];
       _descriptionController.text = existingJournal['description'];
-      _op1Controller.text = existingJournal["option_one"];
-      _op2Controller.text = existingJournal["option_two"];
     }
 
     showModalBottomSheet(
@@ -91,7 +57,7 @@ class _Novo extends State<Novo> {
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   TextField(
                     controller: _titleController,
@@ -103,32 +69,6 @@ class _Novo extends State<Novo> {
                   TextField(
                     controller: _descriptionController,
                     decoration: const InputDecoration(hintText: 'Description'),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  DropdownButton(
-                      value: dropdownvalue,
-                      icon: const Icon(Icons.keyboard_arrow_down),
-                      items: opcoes.map((String opcoes) {
-                        return DropdownMenuItem(
-                          value: opcoes,
-                          child: Text(opcoes),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _op1Controller = newValue! as TextEditingController;
-                        });
-                      }),
-                  IconButton(
-                    color: _iconColor,
-                    icon: const Icon(Icons.local_laundry_service),
-                    onPressed: () {
-                      setState(() {
-                        _iconColor = Colors.red;
-                      });
-                    },
                   ),
                   const SizedBox(
                     height: 20,
@@ -152,7 +92,7 @@ class _Novo extends State<Novo> {
                       Navigator.of(context).pop();
                     },
                     child: Text(id == null ? 'Create New' : 'Update'),
-                  ),
+                  )
                 ],
               ),
             ));
@@ -160,15 +100,15 @@ class _Novo extends State<Novo> {
 
 // Insert a new journal to the database
   Future<void> _addItem() async {
-    await SQLHelper.createItem(_titleController.text,
-        _descriptionController.text, _op1Controller.text, _op2Controller.text);
+    await SQLHelper.createItem(
+        _titleController.text, _descriptionController.text);
     _refreshJournals();
   }
 
   // Update an existing journal
   Future<void> _updateItem(int id) async {
-    await SQLHelper.updateItem(id, _titleController.text,
-        _descriptionController.text, _op1Controller.text, _op2Controller.text);
+    await SQLHelper.updateItem(
+        id, _titleController.text, _descriptionController.text);
     _refreshJournals();
   }
 
@@ -198,7 +138,7 @@ class _Novo extends State<Novo> {
                 margin: const EdgeInsets.all(15),
                 child: ListTile(
                     title: Text(_journals[index]['title']),
-                    subtitle: Text(_journals[index]['option_one']),
+                    subtitle: Text(_journals[index]['description']),
                     trailing: SizedBox(
                       width: 100,
                       child: Row(

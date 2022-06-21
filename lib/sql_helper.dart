@@ -7,8 +7,6 @@ class SQLHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         title TEXT,
         description TEXT,
-        option_one TEXT,
-        option_two TEXT
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )
       """);
@@ -28,16 +26,10 @@ class SQLHelper {
   }
 
   // Create new item (journal)
-  static Future<int> createItem(String title, String? descrption,
-      String? optionOne, String? optionTwo) async {
+  static Future<int> createItem(String title, String? descrption) async {
     final db = await SQLHelper.db();
 
-    final data = {
-      'title': title,
-      'description': descrption,
-      'op1': optionOne,
-      'op2': optionTwo
-    };
+    final data = {'title': title, 'description': descrption};
     final id = await db.insert('items', data,
         conflictAlgorithm: sql.ConflictAlgorithm.replace);
     return id;
@@ -57,15 +49,13 @@ class SQLHelper {
   }
 
   // Update an item by id
-  static Future<int> updateItem(int id, String title, String? descrption,
-      String? optionOne, String? optionTwo) async {
+  static Future<int> updateItem(
+      int id, String title, String? descrption) async {
     final db = await SQLHelper.db();
 
     final data = {
       'title': title,
       'description': descrption,
-      'op1': optionOne,
-      'op2': optionTwo,
       'createdAt': DateTime.now().toString()
     };
 

@@ -49,20 +49,20 @@ class Page4 extends StatelessWidget {
             icon: new Icon(Icons.note_add),
             color: Color.fromARGB(170, 247, 188, 132),
           ),
-          //new IconButton(
-          //  onPressed: () {
-          //    Navigator.push(context, MaterialPageRoute<void>(
-          //      builder: (BuildContext context) {
-          //        Widget _meusAnuncios = MeusAnuncios();
-          //        return _meusAnuncios;
-          //      },
-          //    ));
-          //  },
-          //  icon: new Icon(
-          //    Icons.description,
-          //    color: Color.fromARGB(170, 247, 188, 132),
-          //  ),
-          //),
+          new IconButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute<void>(
+                builder: (BuildContext context) {
+                  Widget _meusAnuncios = MeusAnuncios();
+                  return _meusAnuncios;
+                },
+              ));
+            },
+            icon: new Icon(
+              Icons.description,
+              color: Color.fromARGB(170, 247, 188, 132),
+            ),
+          ),
         ],
       ),
       body: ListView(
